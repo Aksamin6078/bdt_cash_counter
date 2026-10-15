@@ -1,0 +1,1649 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#087f5b" />
+    <title>BDT Cash Counter</title>
+
+    <style>
+      :root {
+        --primary: #087f5b;
+        --primary-dark: #066747;
+        --primary-light: #d9f5e8;
+        --background: #f5f7f8;
+        --surface: #ffffff;
+        --text: #202b27;
+        --muted: #687872;
+        --border: #e1e9e5;
+        --danger: #c62828;
+        --radius: 20px;
+        --shadow: 0 4px 18px rgba(25, 60, 45, 0.06);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        min-height: 100vh;
+        background: var(--background);
+        color: var(--text);
+        font-family: Inter, Roboto, "Segoe UI", Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          transform 0.15s,
+          box-shadow 0.2s;
+      }
+
+      button:active {
+        transform: scale(0.98);
+      }
+
+      button:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible {
+        outline: 3px solid rgba(8, 127, 91, 0.22);
+        outline-offset: 2px;
+      }
+
+      .hero {
+        color: white;
+        background: linear-gradient(135deg, #07583f, #087f5b 65%, #159879);
+      }
+
+      .header-inner,
+      .container {
+        width: 100%;
+        max-width: 1240px;
+        margin: auto;
+      }
+
+      .header-inner {
+        padding: 32px 24px 35px;
+      }
+
+      .eyebrow {
+        margin-bottom: 8px;
+        color: #baf3d8;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.8px;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        font-size: clamp(25px, 4vw, 36px);
+        font-weight: 800;
+        letter-spacing: -0.8px;
+        line-height: 1.2;
+      }
+
+      .header-inner p:last-child {
+        margin-top: 10px;
+        color: #d5f6e7;
+        font-size: 14px;
+      }
+
+      .container {
+        padding: 25px 22px 35px;
+      }
+
+      .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+        padding: 16px;
+        margin-bottom: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .toolbar-group,
+      .toolbar-right {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .toolbar-right {
+        flex: 1;
+        justify-content: flex-end;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        min-height: 43px;
+        padding: 10px 16px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: white;
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .btn:hover {
+        background: #f0f6f3;
+      }
+
+      .btn-primary {
+        color: white;
+        background: var(--primary);
+        border-color: var(--primary);
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+      }
+
+      .btn-soft {
+        color: var(--primary-dark);
+        background: var(--primary-light);
+        border-color: transparent;
+      }
+
+      .search-input,
+      .field {
+        width: 100%;
+        min-width: 0;
+        padding: 11px 13px;
+        border: 1px solid #cbd8d1;
+        border-radius: 12px;
+        background: white;
+        color: var(--text);
+      }
+
+      .search-input {
+        max-width: 260px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.9fr);
+        align-items: start;
+        gap: 22px;
+      }
+
+      .panel {
+        min-width: 0;
+        padding: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .panel-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 5px;
+      }
+
+      .panel-title {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+      }
+
+      .panel-description {
+        margin-bottom: 20px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .count-pill {
+        flex-shrink: 0;
+        padding: 5px 10px;
+        border-radius: 30px;
+        background: #edf7f1;
+        color: var(--primary-dark);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .denominations {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .denom-row {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr) 100px;
+        align-items: center;
+        gap: 13px;
+        padding: 15px;
+        border: 1px solid var(--border);
+        border-radius: 15px;
+        background: white;
+        transition:
+          background 0.2s,
+          border-color 0.2s,
+          opacity 0.2s;
+      }
+
+      .denom-row:hover {
+        border-color: #a8d9c2;
+      }
+
+      .denom-row.disabled-row {
+        background: #f7f9f8;
+        opacity: 0.6;
+      }
+
+      /* Material-inspired toggle */
+      .toggle {
+        appearance: none;
+        -webkit-appearance: none;
+        position: relative;
+        width: 42px;
+        height: 25px;
+        border: 2px solid #899891;
+        border-radius: 30px;
+        background: #e7ece9;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+
+      .toggle::before {
+        content: "";
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: #899891;
+        transition:
+          transform 0.2s,
+          background 0.2s;
+      }
+
+      .toggle:checked {
+        border-color: var(--primary);
+        background: #b4e8d0;
+      }
+
+      .toggle:checked::before {
+        transform: translateX(16px);
+        background: var(--primary);
+      }
+
+      /* No separate taka badge after the toggle */
+      .denom-info {
+        min-width: 0;
+      }
+
+      .denom-value {
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: -0.2px;
+      }
+
+      .denom-caption {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .qty {
+        width: 100%;
+        min-width: 0;
+        padding: 10px 7px;
+        border: 1px solid #ccd8d1;
+        border-radius: 11px;
+        background: white;
+        text-align: center;
+        font-weight: 800;
+      }
+
+      .qty:disabled {
+        background: #edf0ee;
+        cursor: not-allowed;
+      }
+
+      .subtotal-box {
+        grid-column: 2 / 4;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding-top: 9px;
+        border-top: 1px dashed var(--border);
+      }
+
+      .subtotal-label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .subtotal {
+        color: var(--primary-dark);
+        font-size: 14px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .empty-message {
+        padding: 25px 10px;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        min-width: 0;
+      }
+
+      .summary-hero {
+        padding: 23px;
+        border-radius: var(--radius);
+        color: white;
+        background: linear-gradient(145deg, #07583f, #087f5b);
+        box-shadow: 0 8px 24px rgba(6, 95, 70, 0.14);
+      }
+
+      .summary-hero h2,
+      .summary-panel h2 {
+        margin-bottom: 17px;
+        font-size: 19px;
+        font-weight: 800;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .stat-card {
+        min-width: 0;
+        padding: 16px 13px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.11);
+      }
+
+      .stat-label {
+        color: #d1fae5;
+        font-size: 12px;
+      }
+
+      .stat-value {
+        margin-top: 7px;
+        font-size: clamp(21px, 2.5vw, 29px);
+        font-weight: 800;
+        overflow-wrap: anywhere;
+      }
+
+      .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      thead {
+        background: #f0f5f2;
+      }
+
+      th,
+      td {
+        padding: 12px 9px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      th {
+        color: #506158;
+        font-size: 11px;
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+
+      th:nth-child(2),
+      td:nth-child(2) {
+        text-align: center;
+      }
+
+      th:last-child,
+      td:last-child {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      tfoot {
+        color: var(--primary-dark);
+        background: #e7f7ee;
+        font-weight: 800;
+      }
+
+      tfoot td {
+        border-bottom: 0;
+      }
+
+      .notes-area {
+        margin-top: 23px;
+      }
+
+      .notes-area label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 800;
+      }
+
+      .notes-area textarea {
+        width: 100%;
+        min-height: 92px;
+        padding: 12px;
+        border: 1px solid #cbd8d1;
+        border-radius: 12px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      .character-count {
+        margin-top: 5px;
+        color: #84938b;
+        font-size: 12px;
+        text-align: right;
+      }
+
+      .action-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .status {
+        min-height: 21px;
+        margin-top: 12px;
+        color: var(--primary-dark);
+        font-size: 12px;
+        text-align: center;
+        overflow-wrap: anywhere;
+      }
+
+      .developer {
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+
+      .developer strong {
+        color: var(--primary);
+      }
+
+      /* Calculator dialog */
+      .modal-bg {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        background: rgba(15, 23, 42, 0.58);
+        backdrop-filter: blur(5px);
+      }
+
+      .calculator {
+        width: 100%;
+        max-width: 370px;
+        max-height: 94vh;
+        overflow-y: auto;
+        padding: 22px;
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        background: white;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
+        animation: appear 0.18s ease-out;
+      }
+
+      @keyframes appear {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .calc-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 17px;
+      }
+
+      .calc-header h2 {
+        font-size: 20px;
+      }
+
+      .calc-header p {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .close-btn {
+        width: 42px;
+        height: 42px;
+        border: 0;
+        border-radius: 12px;
+        background: #edf2ef;
+        font-size: 27px;
+      }
+
+      .calc-screen {
+        min-height: 96px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 7px;
+        margin-bottom: 13px;
+        padding: 16px;
+        border-radius: 16px;
+        background: #064e3b;
+        color: white;
+        text-align: right;
+      }
+
+      .calc-expression {
+        min-height: 18px;
+        color: #a7f3d0;
+        font-size: 12px;
+        overflow-wrap: anywhere;
+      }
+
+      .calc-display {
+        min-height: 39px;
+        font-size: 31px;
+        font-weight: 800;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .calc-keys {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 9px;
+      }
+
+      .calc-key {
+        min-height: 49px;
+        border: 0;
+        border-radius: 12px;
+        background: #edf2ef;
+        color: var(--text);
+        font-size: 17px;
+        font-weight: 800;
+      }
+
+      .calc-key:hover {
+        background: #dfe9e3;
+      }
+
+      .calc-key.operator {
+        background: #d9f5e8;
+        color: var(--primary-dark);
+      }
+
+      .calc-key.equal {
+        background: var(--primary);
+        color: white;
+      }
+
+      .calc-key.equal:hover {
+        background: var(--primary-dark);
+      }
+
+      .calc-key.double {
+        grid-column: span 2;
+      }
+
+      .copy-result {
+        width: 100%;
+        margin-top: 12px;
+        padding: 12px;
+        border: 1px solid #a8ddc3;
+        border-radius: 12px;
+        background: #e7f7ee;
+        color: var(--primary-dark);
+        font-weight: 800;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar-right {
+          justify-content: flex-start;
+        }
+
+        .search-input {
+          max-width: none;
+          flex: 1;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .header-inner {
+          padding: 25px 17px 28px;
+        }
+
+        .container {
+          padding: 14px 11px 25px;
+        }
+
+        .toolbar {
+          padding: 12px;
+        }
+
+        .toolbar-group {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          width: 100%;
+        }
+
+        .toolbar-group .btn {
+          padding: 10px 7px;
+          font-size: 12px;
+        }
+
+        .toolbar-right {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .toolbar-right > * {
+          width: 100%;
+          max-width: none;
+        }
+
+        .panel {
+          padding: 16px 12px;
+        }
+
+        .panel-title {
+          font-size: 18px;
+        }
+
+        .denom-row {
+          grid-template-columns: 40px minmax(0, 1fr) 70px;
+          gap: 10px;
+          padding: 13px 10px;
+        }
+
+        .toggle {
+          width: 38px;
+          height: 24px;
+        }
+
+        .toggle:checked::before {
+          transform: translateX(14px);
+        }
+
+        .denom-value {
+          font-size: 15px;
+        }
+
+        .qty {
+          padding: 10px 3px;
+        }
+
+        .subtotal-box {
+          grid-column: 2 / 4;
+        }
+
+        .summary-hero {
+          padding: 18px;
+        }
+
+        .stat-card {
+          padding: 13px 10px;
+        }
+
+        .stat-value {
+          font-size: 22px;
+        }
+
+        .action-buttons .btn {
+          padding: 10px 5px;
+          font-size: 12px;
+        }
+      }
+
+      @media (max-width: 350px) {
+        .denom-row {
+          grid-template-columns: 34px minmax(0, 1fr) 60px;
+          gap: 7px;
+          padding: 10px 7px;
+        }
+
+        .toggle {
+          width: 32px;
+          height: 22px;
+        }
+
+        .toggle::before {
+          width: 14px;
+          height: 14px;
+        }
+
+        .toggle:checked::before {
+          transform: translateX(10px);
+        }
+
+        .stat-value {
+          font-size: 19px;
+        }
+      }
+
+      /* Professional print document */
+      .print-document {
+        display: none;
+      }
+
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 16mm;
+        }
+        body {
+          background: #fff !important;
+          color: #111 !important;
+        }
+        body * {
+          visibility: hidden !important;
+        }
+        .print-document,
+        .print-document * {
+          visibility: visible !important;
+        }
+        .print-document {
+          display: block !important;
+          position: absolute !important;
+          inset: 0 auto auto 0 !important;
+          width: 100% !important;
+          padding: 0 !important;
+          color: #111 !important;
+          background: #fff !important;
+          font-family: Arial, Helvetica, sans-serif !important;
+        }
+        .print-doc-header {
+          text-align: center;
+          border-bottom: 2px solid #087f5b;
+          padding-bottom: 14px;
+          margin-bottom: 20px;
+        }
+        .print-doc-header h1 {
+          font-size: 22pt !important;
+          color: #07583f !important;
+          margin: 0 0 5px;
+          letter-spacing: 0 !important;
+        }
+        .print-doc-header p {
+          font-size: 10pt;
+          color: #555;
+          margin: 4px 0 0;
+        }
+        .print-meta {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          margin: 0 0 18px;
+          font-size: 10pt;
+        }
+        .print-total-box {
+          border: 1px solid #a7d9c2;
+          background: #f0faf4 !important;
+          padding: 14px 16px;
+          margin-bottom: 20px;
+          border-radius: 6px;
+        }
+        .print-total-label {
+          font-size: 10pt;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          color: #426456;
+          font-weight: bold;
+        }
+        .print-total-value {
+          font-size: 25pt;
+          font-weight: bold;
+          color: #07583f !important;
+          margin-top: 4px;
+        }
+        .print-document h2 {
+          font-size: 13pt;
+          margin: 0 0 10px;
+          color: #222 !important;
+        }
+        .print-document table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 10.5pt;
+        }
+        .print-document th,
+        .print-document td {
+          padding: 9px 10px;
+          border: 1px solid #cbd5cf;
+          color: #111 !important;
+        }
+        .print-document th {
+          background: #e7f7ee !important;
+          text-align: left;
+          font-size: 9pt;
+          text-transform: uppercase;
+        }
+        .print-document td:nth-child(2),
+        .print-document th:nth-child(2) {
+          text-align: center;
+        }
+        .print-document td:last-child,
+        .print-document th:last-child {
+          text-align: right;
+        }
+        .print-document tfoot {
+          background: #edf7f1 !important;
+          font-weight: bold;
+        }
+        .print-notes {
+          margin-top: 22px;
+          padding: 12px;
+          border: 1px solid #d6ded9;
+          min-height: 55px;
+          white-space: pre-wrap;
+          overflow-wrap: anywhere;
+        }
+        .print-footer {
+          margin-top: 28px;
+          padding-top: 10px;
+          border-top: 1px solid #ddd;
+          display: flex;
+          justify-content: space-between;
+          color: #666;
+          font-size: 9pt;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="hero">
+      <div class="header-inner">
+        <p class="eyebrow">Personal finance tool</p>
+        <h1>Bangladeshi Taka Cash Counter</h1>
+        <p>Count your notes, calculate totals, and keep track with ease.</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="toolbar" aria-label="Cash counter controls">
+        <div class="toolbar-group">
+          <button id="allBtn" class="btn btn-primary">Enable All</button>
+          <button id="noneBtn" class="btn">Disable All</button>
+        </div>
+
+        <div class="toolbar-right">
+          <input
+            id="search"
+            class="search-input"
+            type="search"
+            placeholder="Search denomination..."
+            aria-label="Search denominations"
+          />
+          <button id="openCalculator" class="btn btn-soft">
+            🧮 Open Calculator
+          </button>
+        </div>
+      </section>
+
+      <div class="layout">
+        <section class="panel">
+          <div class="panel-heading">
+            <h2 class="panel-title">Taka Denominations</h2>
+            <span id="enabledCount" class="count-pill">9 denominations</span>
+          </div>
+
+          <p class="panel-description">
+            Switch on the notes you have and enter the quantity for each
+            denomination.
+          </p>
+
+          <div id="denominations" class="denominations"></div>
+          <p id="noResults" class="empty-message hidden">
+            No denominations found.
+          </p>
+        </section>
+
+        <aside class="sidebar">
+          <section class="summary-hero">
+            <h2>Total Summary</h2>
+            <div class="stats">
+              <div class="stat-card">
+                <p class="stat-label">Total Notes</p>
+                <p id="totalNotes" class="stat-value">0</p>
+              </div>
+              <div class="stat-card">
+                <p class="stat-label">Grand Total</p>
+                <p id="grandTotal" class="stat-value">৳0</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel summary-panel">
+            <h2>Calculation Summary</h2>
+            <div class="print-document" id="printDocument">
+              <header class="print-doc-header">
+                <h1>Cash Counting Summary</h1>
+                <p>Bangladeshi Taka (BDT) · Cash denomination report</p>
+              </header>
+              <div class="print-meta">
+                <span
+                  ><strong>Report date:</strong> <span id="printDate"></span
+                ></span>
+                <span><strong>Currency:</strong> BDT (৳)</span>
+              </div>
+              <div class="print-total-box">
+                <div class="print-total-label">Grand Total Amount</div>
+                <div class="print-total-value" id="printGrandTotal">৳0</div>
+                <div>
+                  <strong>Total notes counted:</strong>
+                  <span id="printTotalNotes">0</span>
+                </div>
+              </div>
+              <h2>Denomination Breakdown</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Denomination</th>
+                    <th>Quantity</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="printSummaryRows"></tbody>
+                <tfoot>
+                  <tr>
+                    <td>TOTAL</td>
+                    <td id="printSummaryQty">0</td>
+                    <td id="printSummaryTotal">৳0</td>
+                  </tr>
+                </tfoot>
+              </table>
+              <h2 style="margin-top: 22px">Notes / Description</h2>
+              <div class="print-notes" id="printNotes">—</div>
+              <footer class="print-footer">
+                <span>Bangladeshi Taka Cash Counter</span
+                ><span>Prepared for record keeping</span>
+              </footer>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Note</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="summaryRows"></tbody>
+                <tfoot>
+                  <tr>
+                    <td>TOTAL</td>
+                    <td id="summaryQty">0</td>
+                    <td id="summaryTotal">৳0</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div class="notes-area">
+              <label for="note">Add a Note</label>
+              <textarea
+                id="note"
+                maxlength="300"
+                rows="3"
+                placeholder="Shopping, bill payment, or other expenses..."
+              ></textarea>
+              <p id="noteCount" class="character-count">0/300</p>
+            </div>
+
+            <div class="action-buttons">
+              <button id="clearBtn" class="btn">Clear Counts</button>
+              <button id="saveBtn" class="btn btn-primary">Save</button>
+            </div>
+            <button
+              id="printSummaryBtn"
+              class="btn btn-soft"
+              style="width: 100%; margin-top: 10px"
+            >
+              🖨️ Print Calculation Summary
+            </button>
+
+            <p id="status" class="status" aria-live="polite"></p>
+          </section>
+
+          <p class="developer">Developed by <strong>AK Samin</strong></p>
+        </aside>
+      </div>
+    </main>
+
+    <div
+      id="calculatorModal"
+      class="modal-bg hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="calculatorTitle"
+    >
+      <div class="calculator">
+        <div class="calc-header">
+          <div>
+            <h2 id="calculatorTitle">Calculator</h2>
+            <p>Calculate any amount</p>
+          </div>
+          <button
+            id="closeCalculator"
+            class="close-btn"
+            aria-label="Close calculator"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="calc-screen">
+          <div id="calcExpression" class="calc-expression"></div>
+          <div id="calcDisplay" class="calc-display">0</div>
+        </div>
+
+        <div id="calcKeys" class="calc-keys">
+          <button class="calc-key" data-key="C">C</button>
+          <button class="calc-key" data-key="back">⌫</button>
+          <button class="calc-key operator" data-key="%">%</button>
+          <button class="calc-key operator" data-key="/">÷</button>
+
+          <button class="calc-key" data-key="7">7</button>
+          <button class="calc-key" data-key="8">8</button>
+          <button class="calc-key" data-key="9">9</button>
+          <button class="calc-key operator" data-key="*">×</button>
+
+          <button class="calc-key" data-key="4">4</button>
+          <button class="calc-key" data-key="5">5</button>
+          <button class="calc-key" data-key="6">6</button>
+          <button class="calc-key operator" data-key="-">−</button>
+
+          <button class="calc-key" data-key="1">1</button>
+          <button class="calc-key" data-key="2">2</button>
+          <button class="calc-key" data-key="3">3</button>
+          <button class="calc-key operator" data-key="+">+</button>
+
+          <button class="calc-key double" data-key="0">0</button>
+          <button class="calc-key" data-key=".">.</button>
+          <button class="calc-key equal" data-key="=">=</button>
+        </div>
+
+        <button id="copyResult" class="copy-result">
+          Copy Calculator Result
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const denominations = [1000, 500, 200, 100, 50, 20, 10, 5, 2];
+      const STORAGE_KEY = "bdtCashCounter";
+      const state = {};
+
+      denominations.forEach((value) => {
+        state[value] = { enabled: true, qty: 0 };
+      });
+
+      const money = (amount) =>
+        "৳" + Number(amount || 0).toLocaleString("en-BD");
+
+      const number = (amount) => Number(amount || 0).toLocaleString("en-BD");
+
+      const list = document.getElementById("denominations");
+      const status = document.getElementById("status");
+      const noteInput = document.getElementById("note");
+      const noteCount = document.getElementById("noteCount");
+
+      function renderDenominations() {
+        list.replaceChildren();
+
+        denominations.forEach((value) => {
+          const item = state[value];
+          const row = document.createElement("div");
+          row.dataset.value = value;
+          row.className = "denom-row";
+
+          row.innerHTML = `
+          <input
+            type="checkbox"
+            class="toggle"
+            aria-label="Enable ${value} taka denomination"
+            ${item.enabled ? "checked" : ""}
+          >
+
+          <div class="denom-info">
+            <div class="denom-value">${money(value)}</div>
+            <div class="denom-caption">Per note</div>
+          </div>
+
+          <input
+            type="number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            class="qty"
+            aria-label="Quantity of ${value} taka notes"
+            value="${item.qty}"
+            ${item.enabled ? "" : "disabled"}
+          >
+
+          <div class="subtotal-box">
+            <span class="subtotal-label">Subtotal</span>
+            <span class="subtotal">${money(value * item.qty)}</span>
+          </div>
+        `;
+
+          list.appendChild(row);
+
+          const toggle = row.querySelector(".toggle");
+          const quantity = row.querySelector(".qty");
+
+          toggle.addEventListener("change", (event) => {
+            item.enabled = event.target.checked;
+            quantity.disabled = !item.enabled;
+            row.classList.toggle("disabled-row", !item.enabled);
+            updateTotals();
+            updateEnabledCount();
+          });
+
+          quantity.addEventListener("input", (event) => {
+            const raw = event.target.value;
+            const parsed = raw === "" ? 0 : Number(raw);
+            item.qty = Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 0;
+            updateTotals();
+          });
+
+          row.classList.toggle("disabled-row", !item.enabled);
+        });
+
+        updateTotals();
+        updateEnabledCount();
+        applySearch();
+      }
+
+      function updateEnabledCount() {
+        const count = denominations.filter(
+          (value) => state[value].enabled,
+        ).length;
+        document.getElementById("enabledCount").textContent =
+          `${count} of ${denominations.length} enabled`;
+      }
+
+      function updateTotals() {
+        let total = 0;
+        let totalNotes = 0;
+        const rows = [];
+
+        denominations.forEach((value) => {
+          const item = state[value];
+          const qty = item.enabled ? item.qty : 0;
+          const subtotal = value * qty;
+
+          total += subtotal;
+          totalNotes += qty;
+
+          const row = list.querySelector(`[data-value="${value}"]`);
+          if (row) {
+            row.querySelector(".subtotal").textContent = money(subtotal);
+          }
+
+          if (qty > 0) {
+            const tr = document.createElement("tr");
+
+            [money(value), number(qty), money(subtotal)].forEach((text) => {
+              const td = document.createElement("td");
+              td.textContent = text;
+              tr.appendChild(td);
+            });
+
+            rows.push(tr);
+          }
+        });
+
+        document.getElementById("totalNotes").textContent = number(totalNotes);
+        document.getElementById("grandTotal").textContent = money(total);
+        document.getElementById("summaryQty").textContent = number(totalNotes);
+        document.getElementById("summaryTotal").textContent = money(total);
+
+        const tbody = document.getElementById("summaryRows");
+        tbody.replaceChildren();
+
+        if (rows.length) {
+          rows.forEach((row) => tbody.appendChild(row));
+        } else {
+          const tr = document.createElement("tr");
+          const td = document.createElement("td");
+          td.colSpan = 3;
+          td.textContent = "Enter note quantities above.";
+          td.style.textAlign = "center";
+          td.style.padding = "20px 5px";
+          td.style.color = "#84938b";
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+        }
+
+        // Keep the printable document synchronized with the live calculation.
+        document.getElementById("printGrandTotal").textContent = money(total);
+        document.getElementById("printTotalNotes").textContent =
+          number(totalNotes);
+        document.getElementById("printSummaryQty").textContent =
+          number(totalNotes);
+        document.getElementById("printSummaryTotal").textContent = money(total);
+        document.getElementById("printDate").textContent =
+          new Date().toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          });
+        document.getElementById("printNotes").textContent =
+          noteInput.value.trim() || "—";
+        const printRows = document.getElementById("printSummaryRows");
+        printRows.replaceChildren();
+        denominations.forEach((value) => {
+          const item = state[value];
+          const qty = item.enabled ? item.qty : 0;
+          if (qty <= 0) return;
+          const tr = document.createElement("tr");
+          [money(value), number(qty), money(value * qty)].forEach((text) => {
+            const td = document.createElement("td");
+            td.textContent = text;
+            tr.appendChild(td);
+          });
+          printRows.appendChild(tr);
+        });
+        if (!printRows.children.length) {
+          const tr = document.createElement("tr");
+          const td = document.createElement("td");
+          td.colSpan = 3;
+          td.textContent = "No notes counted.";
+          td.style.textAlign = "center";
+          tr.appendChild(td);
+          printRows.appendChild(tr);
+        }
+      }
+
+      document.getElementById("allBtn").addEventListener("click", () => {
+        denominations.forEach((value) => {
+          state[value].enabled = true;
+        });
+        renderDenominations();
+        status.textContent = "All denominations enabled.";
+      });
+
+      document.getElementById("noneBtn").addEventListener("click", () => {
+        denominations.forEach((value) => {
+          state[value].enabled = false;
+        });
+        renderDenominations();
+        status.textContent = "All denominations disabled.";
+      });
+
+      function applySearch() {
+        const query = document
+          .getElementById("search")
+          .value.replace(/[৳,\s]/g, "")
+          .trim();
+
+        let visible = 0;
+
+        document.querySelectorAll(".denom-row").forEach((row) => {
+          const matches = String(row.dataset.value).includes(query);
+          row.classList.toggle("hidden", !matches);
+          if (matches) visible++;
+        });
+
+        document
+          .getElementById("noResults")
+          .classList.toggle("hidden", visible > 0);
+      }
+
+      document.getElementById("search").addEventListener("input", applySearch);
+
+      document.getElementById("clearBtn").addEventListener("click", () => {
+        denominations.forEach((value) => {
+          state[value].qty = 0;
+        });
+
+        list.querySelectorAll(".qty").forEach((input) => {
+          input.value = 0;
+        });
+
+        updateTotals();
+        status.textContent = "Counts cleared.";
+      });
+
+      function saveData(showMessage = true) {
+        try {
+          localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+              state,
+              note: noteInput.value,
+            }),
+          );
+
+          if (showMessage)
+            status.textContent = "Saved successfully on this device.";
+          return true;
+        } catch {
+          if (showMessage)
+            status.textContent = "Could not save data in this browser.";
+          return false;
+        }
+      }
+
+      document
+        .getElementById("saveBtn")
+        .addEventListener("click", () => saveData());
+
+      document
+        .getElementById("printSummaryBtn")
+        .addEventListener("click", () => {
+          window.print();
+        });
+
+      noteInput.addEventListener("input", () => {
+        noteCount.textContent = `${noteInput.value.length}/300`;
+        document.getElementById("printNotes").textContent =
+          noteInput.value.trim() || "—";
+      });
+
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+
+        if (saved?.state) {
+          denominations.forEach((value) => {
+            const old = saved.state[value];
+
+            if (old) {
+              const qty = Number(old.qty);
+              state[value] = {
+                enabled: Boolean(old.enabled),
+                qty: Number.isSafeInteger(qty) && qty > 0 ? qty : 0,
+              };
+            }
+          });
+
+          noteInput.value =
+            typeof saved.note === "string" ? saved.note.slice(0, 300) : "";
+          noteCount.textContent = `${noteInput.value.length}/300`;
+        }
+      } catch (error) {
+        console.warn("Could not restore saved data.", error);
+      }
+
+      renderDenominations();
+
+      // Calculator
+      const modal = document.getElementById("calculatorModal");
+      const display = document.getElementById("calcDisplay");
+      const expression = document.getElementById("calcExpression");
+
+      let calcInput = "0";
+      let evaluated = false;
+
+      function openCalculator() {
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+        document.getElementById("closeCalculator").focus();
+      }
+
+      function closeCalculator() {
+        modal.classList.add("hidden");
+        document.body.style.overflow = "";
+        document.getElementById("openCalculator").focus();
+      }
+
+      document
+        .getElementById("openCalculator")
+        .addEventListener("click", openCalculator);
+      document
+        .getElementById("closeCalculator")
+        .addEventListener("click", closeCalculator);
+
+      modal.addEventListener("click", (event) => {
+        if (event.target === modal) closeCalculator();
+      });
+
+      function calculateExpression(source) {
+        const tokens = source.match(/(?:\d+\.?\d*|\.\d+|[()+\-*/%])/g);
+
+        if (!tokens || tokens.join("") !== source.replace(/\s/g, "")) {
+          throw Error("Invalid expression");
+        }
+
+        let i = 0;
+
+        function primary() {
+          const token = tokens[i++];
+
+          if (token === "+") return primary();
+          if (token === "-") return -primary();
+
+          if (token === "(") {
+            const result = addSub();
+            if (tokens[i++] !== ")") throw Error("Missing parenthesis");
+            return result;
+          }
+
+          if (!token || !/^(\d+\.?\d*|\.\d+)$/.test(token)) {
+            throw Error("Invalid number");
+          }
+
+          return Number(token);
+        }
+
+        function multiplyDivide() {
+          let result = primary();
+
+          while (["*", "/", "%"].includes(tokens[i])) {
+            const op = tokens[i++];
+            const right = primary();
+
+            if ((op === "/" || op === "%") && right === 0) {
+              throw Error("Cannot divide by zero");
+            }
+
+            result =
+              op === "*"
+                ? result * right
+                : op === "/"
+                  ? result / right
+                  : result % right;
+          }
+
+          return result;
+        }
+
+        function addSub() {
+          let result = multiplyDivide();
+
+          while (tokens[i] === "+" || tokens[i] === "-") {
+            const op = tokens[i++];
+            const right = multiplyDivide();
+            result = op === "+" ? result + right : result - right;
+          }
+
+          return result;
+        }
+
+        const result = addSub();
+
+        if (i !== tokens.length || !Number.isFinite(result)) {
+          throw Error("Invalid calculation");
+        }
+
+        return result;
+      }
+
+      function pressCalculatorKey(key) {
+        if (key === "C") {
+          calcInput = "0";
+          expression.textContent = "";
+          evaluated = false;
+        } else if (key === "back") {
+          if (evaluated || calcInput === "Error") {
+            calcInput = "0";
+            expression.textContent = "";
+            evaluated = false;
+          } else {
+            calcInput = calcInput.length > 1 ? calcInput.slice(0, -1) : "0";
+          }
+        } else if (key === "=") {
+          try {
+            const previous = calcInput;
+            const result = calculateExpression(previous);
+            calcInput = String(Number(result.toPrecision(12)));
+            expression.textContent = previous + " =";
+            evaluated = true;
+          } catch {
+            calcInput = "Error";
+            expression.textContent = "Check your calculation";
+            evaluated = true;
+          }
+        } else if (key === "%") {
+          try {
+            calcInput = String(calculateExpression(calcInput) / 100);
+            evaluated = true;
+          } catch {
+            // Ignore incomplete expressions.
+          }
+        } else {
+          const isNumber = /^[0-9.]$/.test(key);
+          const isOperator = /^[+\-*/]$/.test(key);
+
+          if (!isNumber && !isOperator) return;
+
+          if (calcInput === "Error") {
+            calcInput = "0";
+            evaluated = false;
+          }
+
+          if (evaluated && isNumber) {
+            calcInput = "0";
+            expression.textContent = "";
+            evaluated = false;
+          } else if (evaluated && isOperator) {
+            evaluated = false;
+          }
+
+          if (calcInput === "0" && isNumber) {
+            calcInput = key === "." ? "0." : key;
+          } else {
+            calcInput += key;
+          }
+        }
+
+        display.textContent = calcInput;
+      }
+
+      document.getElementById("calcKeys").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-key]");
+        if (button) pressCalculatorKey(button.dataset.key);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !modal.classList.contains("hidden")) {
+          closeCalculator();
+          return;
+        }
+
+        if (modal.classList.contains("hidden")) return;
+
+        if (/^[0-9.+\-*/%]$/.test(event.key)) {
+          event.preventDefault();
+          pressCalculatorKey(event.key);
+        } else if (event.key === "Enter" || event.key === "=") {
+          event.preventDefault();
+          pressCalculatorKey("=");
+        } else if (event.key === "Backspace") {
+          event.preventDefault();
+          pressCalculatorKey("back");
+        }
+      });
+
+      document
+        .getElementById("copyResult")
+        .addEventListener("click", async () => {
+          if (calcInput === "Error") {
+            status.textContent = "Please calculate a valid result first.";
+            return;
+          }
+
+          try {
+            await navigator.clipboard.writeText(calcInput);
+            status.textContent = "Calculator result copied: " + calcInput;
+          } catch {
+            status.textContent = "Calculator result: " + calcInput;
+          }
+
+          closeCalculator();
+        });
+    </script>
+  </body>
+</html>
