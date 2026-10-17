@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#087f5b" />
     <title>BDT Cash Counter</title>
+
     <style>
       :root {
         --primary: #087f5b;
         --primary-dark: #066747;
         --primary-light: #d9f5e8;
         --background: #f5f7f8;
-        --surface: #ffffff;
+        --surface: #fff;
         --text: #202b27;
         --muted: #687872;
         --border: #e1e9e5;
@@ -30,9 +31,12 @@
         min-height: 100vh;
         background: var(--background);
         color: var(--text);
-        font-family: Inter, Roboto, "Segoe UI", Arial, sans-serif;
-        font-size: 14px;
-        line-height: 1.5;
+        font:
+          14px/1.5 Inter,
+          Roboto,
+          "Segoe UI",
+          Arial,
+          sans-serif;
       }
 
       button,
@@ -47,6 +51,7 @@
       button:active {
         transform: scale(0.98);
       }
+
       button:focus-visible,
       input:focus-visible,
       textarea:focus-visible {
@@ -88,7 +93,6 @@
       .header-inner p:last-child {
         margin-top: 10px;
         color: #d5f6e7;
-        font-size: 14px;
       }
 
       .container {
@@ -203,7 +207,6 @@
       .panel-title {
         font-size: 20px;
         font-weight: 800;
-        letter-spacing: -0.3px;
       }
       .panel-description {
         margin-bottom: 20px;
@@ -236,10 +239,6 @@
         border: 1px solid var(--border);
         border-radius: 15px;
         background: white;
-        transition:
-          background 0.2s,
-          border-color 0.2s,
-          opacity 0.2s;
       }
 
       .denom-row:hover {
@@ -260,9 +259,6 @@
         border-radius: 30px;
         background: #e7ece9;
         cursor: pointer;
-        transition:
-          background 0.2s,
-          border-color 0.2s;
       }
 
       .toggle::before {
@@ -294,7 +290,6 @@
       .denom-value {
         font-size: 17px;
         font-weight: 800;
-        letter-spacing: -0.2px;
       }
       .denom-caption {
         color: var(--muted);
@@ -450,25 +445,25 @@
       .payment-field {
         margin-bottom: 12px;
       }
-      .payment-field:last-child {
-        margin-bottom: 0;
-      }
       .payment-field label {
         display: block;
         margin-bottom: 6px;
         font-weight: 700;
       }
+
       .payment-total {
         margin-top: 14px;
         padding-top: 12px;
         border-top: 1px dashed var(--border);
       }
+
       .payment-total div {
         display: flex;
         justify-content: space-between;
         gap: 12px;
         margin: 5px 0;
       }
+
       .payment-total strong {
         color: var(--primary-dark);
         overflow-wrap: anywhere;
@@ -500,14 +495,12 @@
         font-size: 12px;
         text-align: right;
       }
-
       .action-buttons {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
         margin-top: 15px;
       }
-
       .status {
         min-height: 21px;
         margin-top: 12px;
@@ -525,6 +518,7 @@
         color: var(--primary);
       }
 
+      /* Calculator */
       .modal-bg {
         position: fixed;
         inset: 0;
@@ -547,18 +541,6 @@
         border-radius: 24px;
         background: white;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
-        animation: appear 0.18s ease-out;
-      }
-
-      @keyframes appear {
-        from {
-          opacity: 0;
-          transform: translateY(8px) scale(0.98);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
       }
 
       .calc-header {
@@ -575,7 +557,6 @@
         color: var(--muted);
         font-size: 12px;
       }
-
       .close-btn {
         width: 42px;
         height: 42px;
@@ -617,7 +598,6 @@
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 9px;
       }
-
       .calc-key {
         min-height: 49px;
         border: 0;
@@ -627,9 +607,6 @@
         font-size: 17px;
         font-weight: 800;
       }
-      .calc-key:hover {
-        background: #dfe9e3;
-      }
       .calc-key.operator {
         background: #d9f5e8;
         color: var(--primary-dark);
@@ -637,9 +614,6 @@
       .calc-key.equal {
         background: var(--primary);
         color: white;
-      }
-      .calc-key.equal:hover {
-        background: var(--primary-dark);
       }
       .calc-key.double {
         grid-column: span 2;
@@ -656,7 +630,8 @@
         font-weight: 800;
       }
 
-      .print-document {
+      /* PRINT REPORT: hidden in the normal app */
+      #printDocument {
         display: none;
       }
 
@@ -765,126 +740,212 @@
         }
       }
 
+      /* Professional and readable A4 print layout */
       @media print {
         @page {
           size: A4 portrait;
-          margin: 16mm;
+          margin: 14mm;
         }
+
+        html,
         body {
+          width: 100% !important;
+          min-height: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
           background: #fff !important;
-          color: #111 !important;
+          color: #17211c !important;
+          font-family: Arial, Helvetica, sans-serif !important;
+          font-size: 12pt !important;
+          line-height: 1.5 !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
+
         body * {
           visibility: hidden !important;
         }
-        .print-document,
-        .print-document * {
+
+        #printDocument,
+        #printDocument * {
           visibility: visible !important;
         }
-        .print-document {
+
+        #printDocument {
           display: block !important;
           position: absolute !important;
-          inset: 0 auto auto 0 !important;
+          top: 0 !important;
+          left: 0 !important;
           width: 100% !important;
+          max-width: none !important;
+          margin: 0 !important;
           padding: 0 !important;
-          color: #111 !important;
           background: #fff !important;
+          color: #17211c !important;
           font-family: Arial, Helvetica, sans-serif !important;
+          font-size: 11pt !important;
+          line-height: 1.5 !important;
+          overflow: visible !important;
         }
+
         .print-doc-header {
-          text-align: center;
-          border-bottom: 2px solid #087f5b;
-          padding-bottom: 14px;
-          margin-bottom: 20px;
+          margin: 0 0 22px !important;
+          padding: 0 0 15px !important;
+          border-bottom: 3px solid #087f5b !important;
+          text-align: center !important;
         }
+
         .print-doc-header h1 {
-          font-size: 22pt !important;
+          margin: 0 0 8px !important;
           color: #07583f !important;
-          margin: 0 0 5px;
+          font-size: 23pt !important;
+          font-weight: 800 !important;
+          line-height: 1.25 !important;
           letter-spacing: 0 !important;
         }
+
         .print-doc-header p {
-          font-size: 10pt;
-          color: #555;
-          margin: 4px 0 0;
+          margin: 0 !important;
+          color: #47574e !important;
+          font-size: 11pt !important;
         }
+
         .print-meta {
-          display: flex;
-          justify-content: space-between;
-          gap: 12px;
-          margin-bottom: 18px;
-          font-size: 10pt;
+          display: flex !important;
+          justify-content: space-between !important;
+          align-items: flex-start !important;
+          flex-wrap: wrap !important;
+          gap: 8px 18px !important;
+          margin: 0 0 18px !important;
+          font-size: 10.5pt !important;
         }
+
         .print-total-box {
-          border: 1px solid #a7d9c2;
+          margin: 0 0 24px !important;
+          padding: 17px 19px !important;
+          border: 1px solid #a7d9c2 !important;
+          border-left: 5px solid #087f5b !important;
+          border-radius: 5px !important;
           background: #f0faf4 !important;
-          padding: 14px 16px;
-          margin-bottom: 20px;
-          border-radius: 6px;
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
         }
+
         .print-total-label {
-          font-size: 10pt;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          color: #426456;
-          font-weight: bold;
+          margin-bottom: 4px !important;
+          color: #365d4b !important;
+          font-size: 10pt !important;
+          font-weight: 700 !important;
+          letter-spacing: 1px !important;
+          text-transform: uppercase !important;
         }
+
         .print-total-value {
-          font-size: 25pt;
-          font-weight: bold;
+          margin: 0 0 10px !important;
           color: #07583f !important;
-          margin-top: 4px;
+          font-size: 28pt !important;
+          font-weight: 800 !important;
+          line-height: 1.3 !important;
+          overflow-wrap: anywhere !important;
         }
-        .print-document h2 {
-          font-size: 13pt;
-          margin: 0 0 10px;
-          color: #222 !important;
+
+        .print-total-box > div:not(.print-total-label):not(.print-total-value) {
+          margin-top: 5px !important;
+          font-size: 11pt !important;
         }
-        .print-document table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 10.5pt;
+
+        #printDocument h2 {
+          margin: 22px 0 10px !important;
+          padding-bottom: 6px !important;
+          border-bottom: 1px solid #d5e2da !important;
+          color: #07583f !important;
+          font-size: 14pt !important;
+          font-weight: 800 !important;
+          line-height: 1.35 !important;
+          page-break-after: avoid !important;
+          break-after: avoid !important;
         }
-        .print-document th,
-        .print-document td {
-          padding: 9px 10px;
-          border: 1px solid #cbd5cf;
-          color: #111 !important;
+
+        #printDocument table {
+          width: 100% !important;
+          margin: 0 0 18px !important;
+          border-collapse: collapse !important;
+          table-layout: fixed !important;
+          font-size: 11pt !important;
+          line-height: 1.45 !important;
         }
-        .print-document th {
+
+        #printDocument thead {
+          display: table-header-group !important;
+        }
+
+        #printDocument tr {
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
+        }
+
+        #printDocument th,
+        #printDocument td {
+          padding: 10px 9px !important;
+          border: 1px solid #cbd8d0 !important;
+          color: #17211c !important;
+          vertical-align: middle !important;
+          overflow-wrap: anywhere !important;
+        }
+
+        #printDocument th {
           background: #e7f7ee !important;
-          text-align: left;
-          font-size: 9pt;
-          text-transform: uppercase;
+          color: #07583f !important;
+          font-size: 9.5pt !important;
+          font-weight: 800 !important;
+          text-align: left !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.3px !important;
         }
-        .print-document td:nth-child(2),
-        .print-document th:nth-child(2) {
-          text-align: center;
+
+        #printDocument table th:nth-child(2),
+        #printDocument table td:nth-child(2) {
+          text-align: center !important;
         }
-        .print-document td:last-child,
-        .print-document th:last-child {
-          text-align: right;
+
+        #printDocument table th:last-child,
+        #printDocument table td:last-child {
+          text-align: right !important;
         }
-        .print-document tfoot {
-          background: #edf7f1 !important;
-          font-weight: bold;
+
+        #printDocument tfoot td {
+          background: #e7f7ee !important;
+          color: #07583f !important;
+          border-top: 2px solid #087f5b !important;
+          font-weight: 800 !important;
         }
+
         .print-notes {
-          margin-top: 22px;
-          padding: 12px;
-          border: 1px solid #d6ded9;
-          min-height: 55px;
-          white-space: pre-wrap;
-          overflow-wrap: anywhere;
+          min-height: 65px !important;
+          margin: 0 !important;
+          padding: 12px 14px !important;
+          border: 1px solid #cbd8d0 !important;
+          border-radius: 4px !important;
+          background: #fff !important;
+          color: #17211c !important;
+          font-size: 11pt !important;
+          line-height: 1.6 !important;
+          white-space: pre-wrap !important;
+          overflow-wrap: anywhere !important;
+          page-break-inside: avoid !important;
+          break-inside: avoid !important;
         }
+
         .print-footer {
-          margin-top: 28px;
-          padding-top: 10px;
-          border-top: 1px solid #ddd;
-          display: flex;
-          justify-content: space-between;
-          color: #666;
-          font-size: 9pt;
+          display: flex !important;
+          justify-content: space-between !important;
+          flex-wrap: wrap !important;
+          gap: 6px 12px !important;
+          margin-top: 28px !important;
+          padding-top: 10px !important;
+          border-top: 1px solid #cbd8d0 !important;
+          color: #526158 !important;
+          font-size: 9.5pt !important;
         }
       }
 
@@ -899,6 +960,7 @@
       }
     </style>
   </head>
+
   <body>
     <header class="hero">
       <div class="header-inner">
@@ -955,7 +1017,7 @@
                 <p id="totalNotes" class="stat-value">0</p>
               </div>
               <div class="stat-card">
-                <p class="stat-label">Grand Total</p>
+                <p class="stat-label">Cash + Card</p>
                 <p id="grandTotal" class="stat-value">৳0</p>
               </div>
             </div>
@@ -963,79 +1025,6 @@
 
           <section class="panel summary-panel">
             <h2>Calculation Summary</h2>
-
-            <div class="print-document" id="printDocument">
-              <header class="print-doc-header">
-                <h1>Cash Counting Summary</h1>
-                <p>Bangladeshi Taka (BDT) · Cash denomination report</p>
-              </header>
-              <div class="print-meta">
-                <span
-                  ><strong>Report date:</strong> <span id="printDate"></span
-                ></span>
-                <span><strong>Currency:</strong> BDT (৳)</span>
-              </div>
-              <div class="print-total-box">
-                <div class="print-total-label">Grand Total Amount</div>
-                <div class="print-total-value" id="printGrandTotal">৳0</div>
-                <div>
-                  <strong>Total notes counted:</strong>
-                  <span id="printTotalNotes">0</span>
-                </div>
-                <div>
-                  <strong>Card payment:</strong>
-                  <span id="printCardPayment">৳0</span>
-                </div>
-                <div>
-                  <strong>Combined total:</strong>
-                  <span id="printCombinedTotal">৳0</span>
-                </div>
-              </div>
-              <h2>Denomination Breakdown</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Denomination</th>
-                    <th>Quantity</th>
-                    <th>Amount</th>
-                  </tr>
-                </thead>
-                <tbody id="printSummaryRows"></tbody>
-                <tfoot>
-                  <tr>
-                    <td>TOTAL</td>
-                    <td id="printSummaryQty">0</td>
-                    <td id="printSummaryTotal">৳0</td>
-                  </tr>
-                </tfoot>
-              </table>
-              <h2 style="margin-top: 22px">Payment Breakdown</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Payment method</th>
-                    <th>Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Cash</td>
-                    <td id="printCashPayment">৳0</td>
-                  </tr>
-                  <tr>
-                    <td>Card</td>
-                    <td id="printCardPaymentTable">৳0</td>
-                  </tr>
-                </tbody>
-              </table>
-              <h2 style="margin-top: 22px">Notes / Description</h2>
-              <div class="print-notes" id="printNotes">—</div>
-              <footer class="print-footer">
-                <span>Bangladeshi Taka Cash Counter</span
-                ><span>Prepared for record keeping</span>
-              </footer>
-            </div>
-
             <div class="table-wrap">
               <table>
                 <thead>
@@ -1048,7 +1037,7 @@
                 <tbody id="summaryRows"></tbody>
                 <tfoot>
                   <tr>
-                    <td>TOTAL</td>
+                    <td>TOTAL CASH</td>
                     <td id="summaryQty">0</td>
                     <td id="summaryTotal">৳0</td>
                   </tr>
@@ -1106,11 +1095,96 @@
             </div>
             <p id="status" class="status" aria-live="polite"></p>
           </section>
+
           <p class="developer">Developed by <strong>AK Samin</strong></p>
         </aside>
       </div>
     </main>
 
+    <!-- Separate report, outside the app layout -->
+    <section
+      id="printDocument"
+      class="print-document"
+      aria-label="Printable cash report"
+    >
+      <header class="print-doc-header">
+        <h1>Cash Counting Summary</h1>
+        <p>Bangladeshi Taka (BDT) · Cash and card payment report</p>
+      </header>
+
+      <div class="print-meta">
+        <span><strong>Report date:</strong> <span id="printDate"></span></span>
+        <span><strong>Currency:</strong> BDT (৳)</span>
+      </div>
+
+      <div class="print-total-box">
+        <div class="print-total-label">Grand Total — Cash + Card</div>
+        <div class="print-total-value" id="printGrandTotal">৳0</div>
+        <div>
+          <strong>Total notes counted:</strong>
+          <span id="printTotalNotes">0</span>
+        </div>
+        <div>
+          <strong>Cash total:</strong> <span id="printCashPayment">৳0</span>
+        </div>
+        <div>
+          <strong>Card payment:</strong> <span id="printCardPayment">৳0</span>
+        </div>
+      </div>
+
+      <h2>1. Cash Denomination Breakdown</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Denomination</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody id="printSummaryRows"></tbody>
+        <tfoot>
+          <tr>
+            <td>TOTAL CASH</td>
+            <td id="printSummaryQty">0</td>
+            <td id="printSummaryTotal">৳0</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <h2>2. Payment Breakdown</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Payment method</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Cash</td>
+            <td id="printCashPaymentTable">৳0</td>
+          </tr>
+          <tr>
+            <td>Card</td>
+            <td id="printCardPaymentTable">৳0</td>
+          </tr>
+          <tr>
+            <td><strong>Cash + Card</strong></td>
+            <td id="printCombinedTotal">৳0</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>3. Notes / Description</h2>
+      <div class="print-notes" id="printNotes">—</div>
+
+      <footer class="print-footer">
+        <span>Bangladeshi Taka Cash Counter</span>
+        <span>Prepared for record keeping</span>
+      </footer>
+    </section>
+
+    <!-- Calculator -->
     <div
       id="calculatorModal"
       class="modal-bg hidden"
@@ -1168,9 +1242,9 @@
       const STORAGE_KEY = "bdtCashCounter";
       const state = {};
 
-      denominations.forEach(
-        (value) => (state[value] = { enabled: true, qty: 0 }),
-      );
+      denominations.forEach((value) => {
+        state[value] = { enabled: true, qty: 0 };
+      });
 
       const money = (amount) =>
         "৳" +
@@ -1201,6 +1275,16 @@
       function getCardTotal() {
         const amount = Number(cardPaymentInput.value);
         return Number.isFinite(amount) && amount > 0 ? amount : 0;
+      }
+
+      function addTableRow(tbody, values) {
+        const tr = document.createElement("tr");
+        values.forEach((value) => {
+          const td = document.createElement("td");
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
       }
 
       function renderDenominations() {
@@ -1266,37 +1350,44 @@
           `${count} of ${denominations.length} enabled`;
       }
 
-      function addTableRow(tbody, values) {
-        const tr = document.createElement("tr");
-        values.forEach((value) => {
-          const td = document.createElement("td");
-          td.textContent = value;
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      }
-
       function updateTotals() {
-        let total = 0;
-        let totalNotes = 0;
-        const tbody = document.getElementById("summaryRows");
-        tbody.replaceChildren();
+        const cash = getCashTotal();
+        const notes = getTotalNotes();
+        const card = getCardTotal();
+        const combined = cash + card;
+
+        document.getElementById("totalNotes").textContent = number(notes);
+        document.getElementById("grandTotal").textContent = money(combined);
+        document.getElementById("summaryQty").textContent = number(notes);
+        document.getElementById("summaryTotal").textContent = money(cash);
+
+        document.getElementById("cashPaymentTotal").textContent = money(cash);
+        document.getElementById("cardPaymentTotal").textContent = money(card);
+        document.getElementById("combinedPaymentTotal").textContent =
+          money(combined);
+
+        const summaryRows = document.getElementById("summaryRows");
+        summaryRows.replaceChildren();
 
         denominations.forEach((value) => {
           const item = state[value];
           const qty = item.enabled ? item.qty : 0;
-          const subtotal = value * qty;
-          total += subtotal;
-          totalNotes += qty;
-
           const row = list.querySelector(`[data-value="${value}"]`);
-          if (row) row.querySelector(".subtotal").textContent = money(subtotal);
 
-          if (qty > 0)
-            addTableRow(tbody, [money(value), number(qty), money(subtotal)]);
+          if (row) {
+            row.querySelector(".subtotal").textContent = money(value * qty);
+          }
+
+          if (qty > 0) {
+            addTableRow(summaryRows, [
+              money(value),
+              number(qty),
+              money(value * qty),
+            ]);
+          }
         });
 
-        if (!tbody.children.length) {
+        if (!summaryRows.children.length) {
           const tr = document.createElement("tr");
           const td = document.createElement("td");
           td.colSpan = 3;
@@ -1305,55 +1396,46 @@
           td.style.padding = "20px 5px";
           td.style.color = "#84938b";
           tr.appendChild(td);
-          tbody.appendChild(tr);
+          summaryRows.appendChild(tr);
         }
 
-        const card = getCardTotal();
-        const combined = total + card;
-
-        document.getElementById("totalNotes").textContent = number(totalNotes);
-        document.getElementById("grandTotal").textContent = money(combined);
-        document.getElementById("summaryQty").textContent = number(totalNotes);
-        document.getElementById("summaryTotal").textContent = money(total);
-
-        document.getElementById("cashPaymentTotal").textContent = money(total);
-        document.getElementById("cardPaymentTotal").textContent = money(card);
-        document.getElementById("combinedPaymentTotal").textContent =
-          money(combined);
-
-        document.getElementById("printGrandTotal").textContent =
-          money(combined);
-        document.getElementById("printTotalNotes").textContent =
-          number(totalNotes);
-        document.getElementById("printSummaryQty").textContent =
-          number(totalNotes);
-        document.getElementById("printSummaryTotal").textContent = money(total);
-        document.getElementById("printCashPayment").textContent = money(total);
-        document.getElementById("printCardPayment").textContent = money(card);
-        document.getElementById("printCardPaymentTable").textContent =
-          money(card);
-        document.getElementById("printCombinedTotal").textContent =
-          money(combined);
+        /* Synchronize the separate print report */
         document.getElementById("printDate").textContent =
           new Date().toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "long",
             year: "numeric",
           });
+
+        document.getElementById("printGrandTotal").textContent =
+          money(combined);
+        document.getElementById("printTotalNotes").textContent = number(notes);
+        document.getElementById("printCashPayment").textContent = money(cash);
+        document.getElementById("printCardPayment").textContent = money(card);
+        document.getElementById("printSummaryQty").textContent = number(notes);
+        document.getElementById("printSummaryTotal").textContent = money(cash);
+        document.getElementById("printCashPaymentTable").textContent =
+          money(cash);
+        document.getElementById("printCardPaymentTable").textContent =
+          money(card);
+        document.getElementById("printCombinedTotal").textContent =
+          money(combined);
         document.getElementById("printNotes").textContent =
           noteInput.value.trim() || "—";
 
         const printRows = document.getElementById("printSummaryRows");
         printRows.replaceChildren();
+
         denominations.forEach((value) => {
           const item = state[value];
           const qty = item.enabled ? item.qty : 0;
-          if (qty > 0)
+          if (qty > 0) {
             addTableRow(printRows, [
               money(value),
               number(qty),
               money(value * qty),
             ]);
+          }
         });
 
         if (!printRows.children.length) {
@@ -1401,7 +1483,7 @@
 
       document.getElementById("search").addEventListener("input", applySearch);
 
-      // Clear cash quantities only; preserve card payment and note.
+      /* Clear cash quantities only */
       document.getElementById("clearBtn").addEventListener("click", () => {
         denominations.forEach((value) => (state[value].qty = 0));
         list.querySelectorAll(".qty").forEach((input) => (input.value = 0));
@@ -1410,12 +1492,13 @@
         status.textContent = "Cash counts cleared.";
       });
 
-      // CLEAR ALL: clear cash, card payment, and notes.
+      /* Clear all cash, card payment, and description */
       document.getElementById("clearAllBtn").addEventListener("click", () => {
-        const confirmed = window.confirm(
-          "Clear all cash quantities, card payment, and notes?",
-        );
-        if (!confirmed) return;
+        if (
+          !window.confirm("Clear all cash quantities, card payment, and notes?")
+        ) {
+          return;
+        }
 
         denominations.forEach((value) => (state[value].qty = 0));
         list.querySelectorAll(".qty").forEach((input) => (input.value = 0));
@@ -1439,12 +1522,15 @@
               cardPayment: cardPaymentInput.value,
             }),
           );
-          if (showMessage)
+
+          if (showMessage) {
             status.textContent = "Saved successfully on this device.";
+          }
           return true;
         } catch {
-          if (showMessage)
+          if (showMessage) {
             status.textContent = "Could not save data in this browser.";
+          }
           return false;
         }
       }
@@ -1455,23 +1541,29 @@
 
       document
         .getElementById("printSummaryBtn")
-        .addEventListener("click", () => window.print());
+        .addEventListener("click", () => {
+          updateTotals();
+          window.print();
+        });
 
       noteInput.addEventListener("input", () => {
         noteCount.textContent = `${noteInput.value.length}/300`;
-        document.getElementById("printNotes").textContent =
-          noteInput.value.trim() || "—";
-        saveData(false);
-      });
-
-      cardPaymentInput.addEventListener("input", () => {
-        if (Number(cardPaymentInput.value) < 0) cardPaymentInput.value = "0";
         updateTotals();
         saveData(false);
       });
 
+      cardPaymentInput.addEventListener("input", () => {
+        if (Number(cardPaymentInput.value) < 0) {
+          cardPaymentInput.value = "0";
+        }
+        updateTotals();
+        saveData(false);
+      });
+
+      /* Restore saved values */
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+
         if (saved?.state) {
           denominations.forEach((value) => {
             const old = saved.state[value];
@@ -1483,11 +1575,14 @@
               };
             }
           });
+
           noteInput.value =
             typeof saved.note === "string" ? saved.note.slice(0, 300) : "";
-          cardPaymentInput.value = String(
-            Math.max(0, Number(saved.cardPayment) || 0),
-          );
+
+          const savedCard = Number(saved.cardPayment);
+          cardPaymentInput.value =
+            Number.isFinite(savedCard) && savedCard >= 0 ? savedCard : 0;
+
           noteCount.textContent = `${noteInput.value.length}/300`;
         }
       } catch (error) {
@@ -1496,10 +1591,11 @@
 
       renderDenominations();
 
-      // Calculator
+      /* Calculator */
       const modal = document.getElementById("calculatorModal");
       const display = document.getElementById("calcDisplay");
       const expression = document.getElementById("calcExpression");
+
       let calcInput = "0";
       let evaluated = false;
 
@@ -1528,6 +1624,7 @@
 
       function calculateExpression(source) {
         const tokens = source.match(/(?:\d+\.?\d*|\.\d+|[()+\-*/%])/g);
+
         if (!tokens || tokens.join("") !== source.replace(/\s/g, "")) {
           throw Error("Invalid expression");
         }
@@ -1536,6 +1633,7 @@
 
         function primary() {
           const token = tokens[i++];
+
           if (token === "+") return primary();
           if (token === "-") return -primary();
 
@@ -1548,17 +1646,21 @@
           if (!token || !/^(\d+\.?\d*|\.\d+)$/.test(token)) {
             throw Error("Invalid number");
           }
+
           return Number(token);
         }
 
         function multiplyDivide() {
           let result = primary();
+
           while (["*", "/", "%"].includes(tokens[i])) {
             const op = tokens[i++];
             const right = primary();
+
             if ((op === "/" || op === "%") && right === 0) {
               throw Error("Cannot divide by zero");
             }
+
             result =
               op === "*"
                 ? result * right
@@ -1566,22 +1668,27 @@
                   ? result / right
                   : result % right;
           }
+
           return result;
         }
 
         function addSub() {
           let result = multiplyDivide();
+
           while (tokens[i] === "+" || tokens[i] === "-") {
             const op = tokens[i++];
             const right = multiplyDivide();
             result = op === "+" ? result + right : result - right;
           }
+
           return result;
         }
 
         const result = addSub();
-        if (i !== tokens.length || !Number.isFinite(result))
+        if (i !== tokens.length || !Number.isFinite(result)) {
           throw Error("Invalid calculation");
+        }
+
         return result;
       }
 
@@ -1639,6 +1746,7 @@
             calcInput += key;
           }
         }
+
         display.textContent = calcInput;
       }
 
@@ -1652,6 +1760,7 @@
           closeCalculator();
           return;
         }
+
         if (modal.classList.contains("hidden")) return;
 
         if (/^[0-9.+\-*/%]$/.test(event.key)) {
@@ -1680,7 +1789,9 @@
           } catch {
             status.textContent = "Calculator result: " + calcInput;
           }
+
           closeCalculator();
         });
-    </script>  </body>
+    </script>
+  </body>
 </html>
